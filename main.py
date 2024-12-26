@@ -65,7 +65,7 @@ if st.button("Process Files"):
         vectordb = Chroma.from_texts(text, embeddings, metadatas = [{"source": s} for s in source])
 
         # Retrieval model
-        llm = OpenAI(model_name = "gpt-3.5-turbo", openai_api_key = st.secrets["OPENAI_API_KEY"])
+        llm = OpenAI(model_name = "gpt-3.5-turbo", openai_api_key = st.secrets["OPENAI_API_KEY"], streaming = True)
         retriever = vectordb.as_retriever(search_kwargs = {"k":2})
         model = RetrievalQAWithSourcesChain.from_chain_type(llm = llm, chain_type = "stuff", retriever = retriever)
 
