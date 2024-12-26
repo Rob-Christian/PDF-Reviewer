@@ -7,6 +7,14 @@ from langchain.vectorstores import Chroma
 from langchain import OpenAI, VectorDBQA
 from langchain.chains import RetrievalQAWithSourcesChain
 import PyPDF2
+import os
+
+# Upgrade SQLite in runtime (optional safeguard)
+subprocess.run(["sudo", "apt-get", "update"])
+subprocess.run(["sudo", "apt-get", "install", "-y", "sqlite3"])
+
+# Force reinstall ChromaDB to link with updated SQLite
+subprocess.run(["pip", "install", "--force-reinstall", "chromadb"])
 
 # Extract texts inside PDF
 def pdf_to_text(files):
