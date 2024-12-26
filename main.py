@@ -67,12 +67,12 @@ if st.button("Process Files"):
 
         if st.button("Get Answer"):
           try:
-            with st.spinner("Model is working on it...")
-            result = model({"question": query}, return_only_outputs = True)
-            st.subheader("Answer:")
-            st.write(result["answer"])
-            st.subheader("Source Pages:")
-            st.write(result["sources"])
+            with st.spinner("Model is working on it..."):
+              result = model({"question": query}, return_only_outputs = True)
+              st.subheader("Answer:")
+              st.write(result["answer"])
+              st.subheader("Source Pages:")
+              st.write(result["sources"])
           except Exception as e:
             st.error(f"An error occured: {e}")
       except Exception as e:
