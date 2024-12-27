@@ -41,40 +41,53 @@ if upload_files:
 
 # When Process Button is Pressed
 if st.button("Process Files"):
-  if not upload_files:
-    st.info("Please upload PDF Documents")
-  else:
-    with st.spinner("Processing Files..."):
-      try:
-        # Extract text and sources
-        text_and_source = pdf_to_text(upload_files)
-        text = text_and_source[0]
-        source = text_and_source[1]
+    if not upload_files:
+        st.info("Please upload PDF Documents")
+    else:
+        with st.spinner("Processing Files..."):
+            try:
+                # Extract text and sources
+                text_and_source = pdf_to_text(upload_files)
+                text = text_and_source[0]
+                source = text_and_source[1]
 
-        # Extract embeddings
-        embeddings = OpenAIEmbeddings(openai_api_key = st.secrets["OPENAI_API_KEY"])
+                # Extract embeddings
+                embeddings = OpenAIEmbeddings(openai_api_key=st.secrets["OPENAI_API_KEY"])
 
-        # Vector store with metadata
-        vectordb = Chroma.from_texts(text, embeddings, metadatas = [{"source": s} for s in source])
+                # Vector store with metadata
+                vectordb = Chroma.from_texts(
+                    text, embeddings, metadatas=[{"source": s} for s in source]
+                )
 
-        # Retrieval model
-        llm = OpenAI(model_name = "gpt-3.5-turbo", openai_api_key = st.secrets["OPENAI_API_KEY"], streaming = True)
-        retriever = vectordb.as_retriever(search_kwargs = {"k":2})
-        model = RetrievalQAWithSourcesChain.from_chain_type(llm = llm, chain_type = "stuff", retriever = retriever)
+                # Retrieval model
+                llm = OpenAI(
+                    model_name="gpt-3.5-turbo",
+                    openai_api_key=st.secrets["OPENAI_API_KEY"],
+                    streaming=True,
+                )
+                retriever = vectordb.as_retriever(search_kwargs={"k": 2})
+                model = RetrievalQAWithSourcesChain.from_chain_type(
+                    llm=llm, chain_type="stuff", retriever=retriever
+                )
 
-        # Ask some questions
-        st.header("Ask something about you uploaded")
-        query = st.text_area("Enter your questions here")
+                # Store objects in session state
+                st.session_state["model"] = model
+                st.success("Files processed successfully! You can now ask questions.")
+            except Exception as e:
+                st.error(f"An error occurred during processing: {e}")
 
-        if st.button("Get Answer"):
-          try:
+# Check if model exists in session state
+if "model" in st.session_state:
+    st.header("Ask something about your uploaded files")
+    query = st.text_area("Enter your questions here")
+
+    if st.button("Get Answer"):
+        try:
             with st.spinner("Model is working on it..."):
-              result = model({"question": query}, return_only_outputs = True)
-              st.subheader("Answer:")
-              st.write(result["answer"])
-              st.subheader("Source Pages:")
-              st.write(result["sources"])
-          except Exception as e:
-            st.error(f"An error occured: {e}")
-      except Exception as e:
-        st.error(f"An error occured during processing: {e}")
+                result = st.session_state["model"]({"question": query}, return_only_outputs=True)
+                st.subheader("Answer:")
+                st.write(result["answer"])
+                st.subheader("Source Pages:")
+                st.write(result["sources"])
+        except Exception as e:
+            st.error(f"An error occurred: {e}")
