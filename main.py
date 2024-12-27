@@ -9,6 +9,8 @@ from langchain.chains import RetrievalQAWithSourcesChain
 import PyPDF2
 import os
 
+os.environ["OPEN_API_KEY] = st.secrets["OPEN_API_KEY]
+
 # Extract texts inside PDF
 def pdf_to_text(files):
   text_list = []
@@ -52,7 +54,7 @@ if st.button("Process Files"):
                 source = text_and_source[1]
 
                 # Extract embeddings
-                embeddings = OpenAIEmbeddings(openai_api_key=st.secrets["OPENAI_API_KEY"])
+                embeddings = OpenAIEmbeddings()
 
                 # Vector store with metadata
                 vectordb = Chroma.from_texts(
@@ -62,7 +64,6 @@ if st.button("Process Files"):
                 # Retrieval model
                 llm = OpenAI(
                     model_name="gpt-3.5-turbo",
-                    openai_api_key=st.secrets["OPENAI_API_KEY"],
                     streaming=True,
                 )
                 retriever = vectordb.as_retriever(search_kwargs={"k": 2})
