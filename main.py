@@ -88,7 +88,5 @@ if "model" in st.session_state:
                 result = st.session_state["model"]({"question": query}, return_only_outputs=True)
                 st.subheader("Answer:")
                 st.write(result["answer"])
-                st.subheader("Source Pages:")
-                st.write(result["sources"])
         except Exception as e:
             st.error(f"An error occurred: {e}")
