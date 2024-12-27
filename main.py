@@ -9,7 +9,7 @@ from langchain.chains import RetrievalQAWithSourcesChain
 import PyPDF2
 import os
 
-os.environ["OPEN_API_KEY] = st.secrets["OPEN_API_KEY]
+os.environ["OPEN_API_KEY"] = st.secrets["OPEN_API_KEY"]
 
 # Extract texts inside PDF
 def pdf_to_text(files):
