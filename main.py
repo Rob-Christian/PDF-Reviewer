@@ -26,8 +26,8 @@ def pdf_to_text(files):
   return [text_list, source_list]
 
 # Customize PDF Reviewer Website
-st.set_page_config(layout = 'centered', page_title = "PDF Reviewer")
-st.header("PDF Reviewer")
+st.set_page_config(layout = 'centered', page_title = "Retrieval-based Question Answering")
+st.header("PDF Reviewer with Question Answering")
 st.write("---")
 
 # File to be upload
