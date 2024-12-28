@@ -25,6 +25,12 @@ def pdf_to_text(files):
       source_list.append(file.name + "_page_" + "str(i)")
   return [text_list, source_list]
 
+# Initialize session state variables
+if "mode" not in st.session_state:
+  st.session_state["mode"] = None
+if "model" not in st.session_state:
+  st.session_state["model"] = None
+
 # Customize PDF Reviewer Website
 st.set_page_config(layout = 'centered', page_title = "Retrieval-based Question Answering")
 st.header("PDF Reviewer with Question Answering")
