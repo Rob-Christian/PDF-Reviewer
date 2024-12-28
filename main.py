@@ -114,8 +114,52 @@ if st.session_state["model"]:
 
   # For "generate questions" option
   elif st.session_state["mode"] == "generate":
-    st.write("Generating questions...")
+    st.subheeader("Generate Questions")
+    num_questions = st.slider("How many questions do you want to generate?", 1, 5, 3)
+    try:
+      with st.spinner("Generating questions..."):
+        # Retrieve all texts
+        all_texts = "".join(st.session_state["model"].retriever.vectorstore.texts)
+
+        # Define the prompt template
+        prompt = PromptTemplate(
+          input_variables = ["text", "num_questions"],
+          template = (
+            "Based on the following text, generate {num_questions} questions that cover the key points:\n\n{text}"
+          )
+        )
+
+        # Prompt Formatting
+        prompt_format = prompt.format(
+          text = all_text,
+          num_questions = num_questions
+        )
+
+        # Use LLM to generate questions
+        response = st.session_state["model"].llm(
+          {"prompt": prompt_format},
+          return_only_outputs = True
+        )
+
+        st.subheader("Generated Questions")
+        st.write(response["text"])
 
 else:
   st.info("Please upload and process your PDF files first")
-    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
