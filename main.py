@@ -90,7 +90,7 @@ if "model" in st.session_state:
                     st.write(result["answer"])
             except Exception as e:
                 st.error(f"An error occurred: {e}")
-    elif st.button("Generate Questions")
+    elif st.button("Generate Questions"):
         print("Generating Questions...")
 
     
