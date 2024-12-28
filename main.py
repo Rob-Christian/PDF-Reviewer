@@ -25,12 +25,6 @@ def pdf_to_text(files):
       source_list.append(file.name + "_page_" + "str(i)")
   return [text_list, source_list]
 
-# Initialize session state variables
-if "mode" not in st.session_state:
-  st.session_state["mode"] = None
-if "model" not in st.session_state:
-  st.session_state["model"] = None
-
 # Customize PDF Reviewer Website
 st.set_page_config(layout = 'centered', page_title = "Retrieval-based Question Answering")
 st.header("PDF Reviewer with Question Answering")
@@ -84,83 +78,15 @@ if st.button("Process Files"):
                 st.error(f"An error occurred during processing: {e}")
 
 # Check if model exists in session state
-if st.session_state["model"]:
-  st.header("What do you prefer?")
-  col1, col2 = st.columns(2)
+if "model" in st.session_state:
+    st.header("Ask something about your uploaded files")
+    query = st.text_area("Enter your questions here")
 
-  # Selecting modes
-  with col1:
-    if st.button("Ask a Question"):
-      st.session_state["mode"] = "ask"
-  with col2:
-    if st.button("Generate Questions"):
-      st.session_state["mode"] = "generate"
-
-  # For "ask a question" option
-  if st.session_state["mode"] == "ask":
-    st.subheader("Ask a Question")
-    query = st.text_area("Enter your question here", key = "query")
     if st.button("Get Answer"):
-      try:
-        with st.spinner("Model is working on it..."):
-          result = st.session_state["model"](
-            {"question": query},
-            return_only_outputs = True
-          )
-          st.subheader("Answer")
-          st.write(result["answer"])
-      except Exception as e:
-        st.error(f"An error occured: {e}")
-
-  # For "generate questions" option
-  elif st.session_state["mode"] == "generate":
-    st.subheader("Generate Questions")
-    num_questions = st.slider("How many questions do you want to generate?", 1, 5, 3)
-    try:
-      with st.spinner("Generating questions..."):
-        # Retrieve all texts
-        all_texts = "".join(st.session_state["model"].retriever.vectorstore.texts)
-
-        # Define the prompt template
-        prompt = PromptTemplate(
-          input_variables = ["text", "num_questions"],
-          template = (
-            "Based on the following text, generate {num_questions} questions that cover the key points:\n\n{text}"
-          )
-        )
-
-        # Prompt Formatting
-        prompt_format = prompt.format(
-          text = all_text,
-          num_questions = num_questions
-        )
-
-        # Use LLM to generate questions
-        response = st.session_state["model"].llm(
-          {"prompt": prompt_format},
-          return_only_outputs = True
-        )
-
-        st.subheader("Generated Questions")
-        st.write(response["text"])
-    except Exception as e:
-      st.error("An error occurred while generating questions: {e}")
-else:
-  st.info("Please upload and process your PDF files first")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        try:
+            with st.spinner("Model is working on it..."):
+                result = st.session_state["model"]({"question": query}, return_only_outputs=True)
+                st.subheader("Answer:")
+                st.write(result["answer"])
+        except Exception as e:
+            st.error(f"An error occurred: {e}")
