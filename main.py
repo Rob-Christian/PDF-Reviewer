@@ -78,19 +78,36 @@ if st.button("Process Files"):
                 st.error(f"An error occurred during processing: {e}")
 
 # Check if model exists in session state
-if "model" in st.session_state:
-    st.header("What do you prefer to do?")
+if st.session_state["model"]:
+  st.header("What do you prefer?")
+  col1, col2 = st.columns(2)
+
+  # Selecting modes
+  with col1:
     if st.button("Ask a Question"):
-        query = st.text_area("Enter your questions here")
-        if st.button("Get Answer"):
-            try:
-                with st.spinner("Model is working on it..."):
-                    result = st.session_state["model"]({"question": query}, return_only_outputs=True)
-                    st.subheader("Answer:")
-                    st.write(result["answer"])
-            except Exception as e:
-                st.error(f"An error occurred: {e}")
-    elif st.button("Generate Questions"):
-        st.write("Generating Questions...")
+      st.session_state["mode"] = "ask"
+  with col2:
+    if st.button("Generate Questions"):
+      st.session_state["mode"] = "generate"
+
+  # For "ask a question" option
+  if st.session_state["mode"] == "ask":
+    st.subheader("Ask a Question")
+    query = st.text_area("Enter your question here", key = "query")
+    if st.button("Get Answer"):
+      try:
+        with st.spinner("Model is working on it..."):
+          result = st.session_state["model"](
+            {"question": query},
+            return_only_outputs = True
+          )
+          st.subheader("Answer")
+          st.write(result["answer"])
+      except Exception as e:
+        st.error(f"An error occured: {e}")
+
+  # For "generate questions" option
+  elif st.session_state["mode"] == "generate":
+    st.write("Generating questions...")
 
     
