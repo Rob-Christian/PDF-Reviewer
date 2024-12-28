@@ -143,7 +143,8 @@ if st.session_state["model"]:
 
         st.subheader("Generated Questions")
         st.write(response["text"])
-
+    except Exception as e:
+      st.error("An error occurred while generating questions: {e}")
 else:
   st.info("Please upload and process your PDF files first")
 
