@@ -79,14 +79,18 @@ if st.button("Process Files"):
 
 # Check if model exists in session state
 if "model" in st.session_state:
-    st.header("Ask something about your uploaded files")
-    query = st.text_area("Enter your questions here")
+    st.header("What do you prefer to do?")
+    if st.button("Ask a Question"):
+        query = st.text_area("Enter your questions here")
+        if st.button("Get Answer"):
+            try:
+                with st.spinner("Model is working on it..."):
+                    result = st.session_state["model"]({"question": query}, return_only_outputs=True)
+                    st.subheader("Answer:")
+                    st.write(result["answer"])
+            except Exception as e:
+                st.error(f"An error occurred: {e}")
+    elif st.button("Generate Questions")
+        print("Generating Questions...")
 
-    if st.button("Get Answer"):
-        try:
-            with st.spinner("Model is working on it..."):
-                result = st.session_state["model"]({"question": query}, return_only_outputs=True)
-                st.subheader("Answer:")
-                st.write(result["answer"])
-        except Exception as e:
-            st.error(f"An error occurred: {e}")
+    
