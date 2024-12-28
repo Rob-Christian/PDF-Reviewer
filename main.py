@@ -110,4 +110,6 @@ if st.session_state["model"]:
   elif st.session_state["mode"] == "generate":
     st.write("Generating questions...")
 
+else:
+  st.info("Please upload and process your PDF files first")
     
