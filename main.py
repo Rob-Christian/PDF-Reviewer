@@ -114,7 +114,7 @@ if st.session_state["model"]:
 
   # For "generate questions" option
   elif st.session_state["mode"] == "generate":
-    st.subheeader("Generate Questions")
+    st.subheader("Generate Questions")
     num_questions = st.slider("How many questions do you want to generate?", 1, 5, 3)
     try:
       with st.spinner("Generating questions..."):
