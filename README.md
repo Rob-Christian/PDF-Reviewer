@@ -25,16 +25,3 @@ This project is a Streamlit-based application that enables users to upload up to
 - OpenAI API Key
 
 ---
-
-## Installation
-
-1. Clone this repository:
-   ```bash
-   git clone https://github.com/your-repo/pdf-reviewer-qa.git
-   cd pdf-reviewer-qa
-
-2. Install packages
-   ```bash
-   pip install -r requirements.txt
-
-3. Add your OpenAI API key
